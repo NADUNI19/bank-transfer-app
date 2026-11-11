@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Transaction History</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1e293b;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* Header */
+
+        .header {
+            background: linear-gradient(135deg, #0f172a, #1e40af);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        /* Back Button */
+
+        .back-btn {
+            display: inline-block;
+            background: white;
+            color: #1e40af;
+            text-decoration: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #dbeafe;
+            transform: translateY(-2px);
+        }
+
+        /* History Card */
+
+        .history-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .history-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .history-title h2 {
+            font-size: 21px;
+            color: #0f172a;
+        }
+
+        .history-title span {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* Table */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        thead {
+            background: #eff6ff;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px 14px;
+            color: #1e40af;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+
+        tbody tr {
+            transition: 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Status */
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .failed {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* Amount */
+
+        .amount {
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        /* Empty Message */
+
+        .empty-message {
+            text-align: center;
+            padding: 35px;
+            color: #64748b;
+        }
+
+        /* Footer */
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 25px;
+        }
+
+        /* Mobile Responsive */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .header {
+                padding: 22px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .history-card {
+                padding: 15px;
+            }
+
+            .history-title h2 {
+                font-size: 18px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+
+    <div class="header">
+
+        <h1>Bank Transaction History</h1>
+
+        <p>View all customer banking transactions in one place.</p>
+
+        <a th:href="@{/bank}" class="back-btn">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- History Section -->
+
+    <div class="history-card">
+
+        <div class="history-title">
+
+            <h2>All Transactions</h2>
+
+            <span>Transaction Records</span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>From Account</th>
+                    <th>To Account</th>
+                    <th>Amount (LKR)</th>
+                    <th>Status</th>
+                    <th>Date & Time</th>
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                <tr th:each="transaction : ${transactions}">
+
+                    <td th:text="${transaction.id}"></td>
+
+                    <td th:text="${transaction.fromAccount}"></td>
+
+                    <td th:text="${transaction.toAccount}"></td>
+
+                    <td class="amount"
+                        th:text="${transaction.amount}">
+                    </td>
+
+                    <td>
+
+                        <span class="status"
+                              th:classappend="${transaction.status.name() == 'SUCCESS'} ? ' success' : ' failed'"
+                              th:text="${transaction.status}">
+                        </span>
+
+                    </td>
+
+                    <td th:text="${transaction.createdAt}"></td>
+
+                </tr>
+
+
+                <tr th:if="${#lists.isEmpty(transactions)}">
+
+                    <td colspan="6" class="empty-message">
+                        No transactions available.
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        Bank Transfer Management System
+    </div>
+
+</div>
+
+</body>
+</html>
