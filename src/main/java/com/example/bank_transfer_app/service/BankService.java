@@ -25,7 +25,7 @@ public class BankService {
         this.transactionRepository = transactionRepository;
     }
 
-    // Transfer Money
+
     @Transactional(rollbackFor = Exception.class)
     public void transfer(
             String fromAccount,
@@ -33,7 +33,7 @@ public class BankService {
             BigDecimal amount,
             boolean simulateFailure) {
 
-        // Validate account numbers
+
         if (fromAccount == null || fromAccount.isBlank()
                 || toAccount == null || toAccount.isBlank()) {
 
@@ -41,14 +41,13 @@ public class BankService {
                     "Account numbers are required.");
         }
 
-        // Sender and receiver cannot be the same
+
         if (fromAccount.equals(toAccount)) {
 
             throw new InvalidTransferException(
                     "Sender and receiver must be different accounts.");
         }
 
-        // Validate transfer amount
         if (amount == null
                 || amount.compareTo(BigDecimal.ZERO) <= 0) {
 
@@ -56,19 +55,19 @@ public class BankService {
                     "Amount must be greater than zero.");
         }
 
-        // Check sender account
+
         customerRepository.getByAccountNumber(fromAccount)
                 .orElseThrow(() ->
                         new AccountNotFoundException(
                                 "Sender account not found."));
 
-        // Check receiver account
+
         customerRepository.getByAccountNumber(toAccount)
                 .orElseThrow(() ->
                         new AccountNotFoundException(
                                 "Receiver account not found."));
 
-        // Debit money from sender
+
         int debited = customerRepository.debit(fromAccount, amount);
 
         if (debited == 0) {
@@ -77,14 +76,13 @@ public class BankService {
                     "Insufficient balance.");
         }
 
-        // Simulate system failure to test rollback
         if (simulateFailure) {
 
             throw new RuntimeException(
                     "Simulated system failure. All changes were rolled back.");
         }
 
-        // Credit money to receiver
+
         int credited = customerRepository.credit(toAccount, amount);
 
         if (credited == 0) {
@@ -93,7 +91,7 @@ public class BankService {
                     "Receiver account not found.");
         }
 
-        // Save successful transaction
+
         BankTransaction transaction = new BankTransaction(
                 fromAccount,
                 toAccount,
@@ -104,7 +102,7 @@ public class BankService {
         transactionRepository.save(transaction);
     }
 
-    // Create New Customer
+
     @Transactional
     public void createCustomer(Customer customer) {
 

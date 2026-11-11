@@ -27,7 +27,6 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     @Query("SELECT c FROM Customer c ORDER BY c.fullName ASC")
     List<Customer> findAllOrdered();
 
-    // Search by customer name OR email OR account number
     @Query("""
         SELECT c FROM Customer c
         WHERE LOWER(c.fullName) LIKE LOWER(CONCAT('%', :keyword, '%'))

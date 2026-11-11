@@ -27,7 +27,8 @@ public class DataLoader {
                         new BigDecimal("50000.00")
                 );
 
-                Customer nimali = new Customer(
+                Customer nimali= new Customer(
+
                         "100002",
                         "Nimali",
                         "nimali@gmail.com",

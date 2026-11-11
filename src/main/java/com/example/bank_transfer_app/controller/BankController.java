@@ -36,7 +36,7 @@ public class BankController {
         this.transactionRepository = transactionRepository;
     }
 
-    // Display Bank Dashboard
+
     @GetMapping({"/", "/bank"})
     public String showDashboard(
             @RequestParam(required = false) String keyword,
@@ -83,7 +83,7 @@ public class BankController {
     }
 
 
-    // Add New Customer
+
     @PostMapping("/customers")
     public String addCustomer(
             @ModelAttribute Customer customer,
@@ -110,7 +110,7 @@ public class BankController {
     }
 
 
-    // Transfer Money
+
     @PostMapping("/transfer")
     public String transferMoney(
             @ModelAttribute TransferRequest request,
@@ -165,7 +165,7 @@ public class BankController {
     }
 
 
-    // Display All Transaction History
+
     @GetMapping("/history")
     public String showHistory(Model model) {
 
@@ -177,24 +177,5 @@ public class BankController {
         return "history";
     }
 
-
-    // Display Individual Customer Transaction History
-    @GetMapping("/accounts/{accountNumber}/history")
-    public String showCustomerHistory(
-            @PathVariable String accountNumber,
-            Model model) {
-
-        model.addAttribute(
-                "accountNumber",
-                accountNumber
-        );
-
-        model.addAttribute(
-                "transactions",
-                transactionRepository.findHistory(accountNumber)
-        );
-
-        return "customer-history";
-    }
 
 }

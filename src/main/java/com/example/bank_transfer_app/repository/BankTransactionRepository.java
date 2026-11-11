@@ -14,14 +14,13 @@ import java.util.List;
 public interface BankTransactionRepository
         extends JpaRepository<BankTransaction, Long> {
 
-    // Get all transactions ordered by latest date
+
     @Query("SELECT t FROM BankTransaction t " +
             "ORDER BY t.createdAt DESC")
     List<BankTransaction> findAllLatest();
 
 
-    // Get transactions where customer is sender OR receiver
-    // Includes both SUCCESS and FAILED transactions
+
     @Query("SELECT t FROM BankTransaction t " +
             "WHERE t.fromAccount = :accountNumber " +
             "OR t.toAccount = :accountNumber " +
@@ -30,7 +29,7 @@ public interface BankTransactionRepository
             @Param("accountNumber") String accountNumber);
 
 
-    // Get transactions by status
+
     @Query("SELECT t FROM BankTransaction t " +
             "WHERE t.status = :status " +
             "ORDER BY t.createdAt DESC")
@@ -38,7 +37,7 @@ public interface BankTransactionRepository
             @Param("status") TransactionStatus status);
 
 
-    // Count transactions by status
+
     @Query("SELECT COUNT(t) FROM BankTransaction t " +
             "WHERE t.status = :status")
     long countByStatus(
